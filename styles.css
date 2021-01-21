@@ -1,8 +1,8 @@
 #timer-btn {
-  width: 100px;
+  /* width: 100px;
   height: 40px;
   padding: 10px;
-  margin: 10px;
+  margin: 10px; */
 }
 
 .timer-btn-active-state {
@@ -18,10 +18,10 @@
 }
 
 #reset-btn {
-  width: 100px;
+  /* width: 100px;
   height: 40px;
   padding: 10px;
-  margin: 10px;
+  margin: 10px; */
 }
 
 #time-display {
