@@ -27,3 +27,11 @@
 #time-display {
   padding: 10px;
 }
+
+.class-span {
+  width: 3em;
+}
+
+.task-btn {
+  z-index: 10;
+}

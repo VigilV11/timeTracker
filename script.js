@@ -1,7 +1,7 @@
 const timerBtn = document.querySelector('#timer-btn');
 const timeDisplay = document.querySelector('#time-display');
 const resetBtn = document.querySelector('#reset-btn');
-const addTask = document.querySelector('.add-task-btn');
+const addTaskBtn = document.querySelector('.add-task-btn');
 const taskInput = document.querySelector('.task-input');
 const taskListDiv = document.querySelector('#task-list-div');
 
@@ -10,13 +10,19 @@ let totalTime = 0; // total time elapsed in milliseconds
 let timerStartTime; // timer start timestamp
 let intervalTimer;
 const taskList = [];
+let taskId = 0; // a number to indentify individual items
+
+// taskItem = {taskName: , taskID: , dayStarted: , dayCompleted: , allTimeTracked: [], estimatedCompletionTime: , actualCompletionTime: , project: [area: [sub-area: [sub-sub-area]]]}
 
 //========== DISPLAY TIME ELAPSED ==========\\
 // Convert to hours mins:secs
-const displayTime = function(timeElapsed) {
+const displayTime = function(timeElapsed, e) {
+  timerDisplayText = document.querySelector(
+    `.timer-${e.target.dataset.taskId}`
+  );
   // timeElapsed is in milliseconds
 
-  const ms = Math.round(timeElapsed / 100);
+  // const ms = Math.round(timeElapsed / 100);
   const timeInSecs = Math.round(timeElapsed / 1000);
   const secs = timeInSecs % 60;
   const timeInMins = (timeInSecs - secs) / 60;
@@ -25,43 +31,47 @@ const displayTime = function(timeElapsed) {
   if (timeInMins > 59) {
     const mins = timeInMins % 60;
     const hrs = (timeInMins - mins) / 60;
-    timeDisplay.textContent = `${hrs}h ${String(mins).padStart(
+    timerDisplayText.textContent = `${hrs}h ${String(mins).padStart(
       2,
       '0'
     )}m ${String(secs).padStart(2, '0')}s`;
   } else {
     // if no hours, display mins:secs
     mins = timeInMins;
-    timeDisplay.textContent = `${String(mins).padStart(2, '0')}m ${String(
+    timerDisplayText.textContent = `${String(mins).padStart(2, '0')}m ${String(
       secs
     ).padStart(2, '0')}s`;
   }
 };
 
 //========== TIMER IS ACTIVE ==========\\
-const timerActive = function() {
-  timerOn = true;
-  timerBtn.textContent = 'Pause';
+const timerActive = function(e) {
+  if (timerOn) return; // if another timer is running don't do anything
 
-  timerBtn.className = '';
-  timerBtn.classList.add('timer-btn-active-state');
+  timerOn = true;
+
+  e.target.classList.remove('fa-play-circle');
+  e.target.classList.add('fa-pause');
+
   timerStartTime = Date.now(); // current timestamp
+
   intervalTimer = setInterval(() => {
     // totalTime is initially 0, current time elapsed is stored into it during "Pause" and then reloaded here
     // this will give correct time elapsed even if the browser is not active
     const timeElapsed = totalTime + Date.now() - timerStartTime;
 
-    displayTime(timeElapsed);
+    displayTime(timeElapsed, e);
   }, 1000);
 };
 
 //========== TIMER IS PAUSED ==========\\
-const timerPaused = function() {
+const timerPaused = function(e) {
   totalTime += Date.now() - timerStartTime;
   timerOn = false;
-  timerBtn.textContent = 'Resume';
-  timerBtn.className = '';
-  timerBtn.classList.add('timer-btn-paused-state');
+
+  e.target.classList.remove('fa-pause');
+  e.target.classList.add('fa-play-circle');
+
   clearInterval(intervalTimer);
 };
 
@@ -77,27 +87,23 @@ const timerReset = function() {
   displayTime(totalTime);
 };
 
-//========== LOGIC ==========\\
-// Start/Pause the timer
-timerBtn.addEventListener('click', () => {
-  !timerOn ? timerActive() : timerPaused();
-});
-
-// Reset the timer
-resetBtn.addEventListener('click', timerReset);
-
-addTask.addEventListener('click', () => {
-  if (taskInput.value !== '') {
-    console.log(taskInput.value);
-    const html = `
-    <div>
-    <span>${taskInput.value}</span>  &nbsp;&nbsp;&nbsp;&nbsp;
-    <span id="time-display">00m 00s</span>
+//========== ADD TASK ==========\\
+const addTask = function() {
+  // console.log(taskInput.value);
+  taskId++;
+  taskList.push({ taskName: taskInput.value, taskId: taskId });
+  const html = `
+    <div class="task-item">
+    <span>${taskInput.value.padEnd(30)}</span>  &nbsp;&nbsp;&nbsp;&nbsp;
+    <span id="time-display" class="timer-${taskId}">00m 00s</span>
     
 
 
-    <i class="fas fa-play-circle"></i> &nbsp;
-    <i class="fas fa-pause"></i> &nbsp;
+    <i class="fas fa-play-circle" data-task-id=${taskId}></i> &nbsp;
+
+    
+    
+    
     <i class="fas fa-sync-alt"></i> &nbsp;
     <i class="fas fa-trash"></i> &nbsp;
     <i class="fas fa-check-circle"></i> &nbsp;&nbsp;
@@ -108,13 +114,30 @@ addTask.addEventListener('click', () => {
     
 
     <!--
+    <i class="fas fa-pause" data-task-id=${taskId}></i> &nbsp;
+
     <button class="btn"><i class="fa fa-trash"></i></button>
     <button class="btn"><i class="fas fa-play-circle"></i></button>
     <button id="timer-btn" class="btn-off-state">Start</button>
     <button id="reset-btn" class="btn-off-state">Reset</button>
     -->
     `;
-    taskListDiv.insertAdjacentHTML('beforeend', html);
+  taskListDiv.insertAdjacentHTML('beforeend', html);
+};
+
+//========== LOGIC ==========\\
+// Start/Pause the timer
+timerBtn.addEventListener('click', () => {
+  !timerOn ? timerActive() : timerPaused();
+});
+
+// Reset the timer
+resetBtn.addEventListener('click', timerReset);
+
+// Add a new task
+addTaskBtn.addEventListener('click', () => {
+  if (taskInput.value !== '') {
+    addTask();
   }
 
   taskInput.value = '';
@@ -124,5 +147,11 @@ addTask.addEventListener('click', () => {
 
 // Adding event delegation to handle buttons related to individual tasks
 taskListDiv.addEventListener('click', function(e) {
-  // some logic here
+  if (!e.target.classList.contains('fas')) return;
+
+  // console.log(e.target.dataset.taskId);
+  // document.querySelector(`.timer-${e.target.dataset.taskId}`).textContent = '';
+
+  // For now this works only for a single task.
+  timerOn ? timerPaused(e) : timerActive(e);
 });
