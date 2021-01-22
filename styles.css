@@ -1,37 +1,3 @@
-#timer-btn {
-  /* width: 100px;
-  height: 40px;
-  padding: 10px;
-  margin: 10px; */
-}
-
-.timer-btn-active-state {
-  background-color: olivedrab;
-}
-
-.timer-btn-paused-state {
-  background-color: skyblue;
-}
-
-.btn-off-state {
-  background-color: sandybrown;
-}
-
-#reset-btn {
-  /* width: 100px;
-  height: 40px;
-  padding: 10px;
-  margin: 10px; */
-}
-
 #time-display {
   padding: 10px;
-}
-
-.class-span {
-  width: 3em;
-}
-
-.task-btn {
-  z-index: 10;
 }

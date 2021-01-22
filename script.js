@@ -12,7 +12,7 @@ let intervalTimer;
 const taskList = [];
 let taskId = 0; // a number to indentify individual items
 
-// taskItem = {taskName: , taskID: , dayStarted: , dayCompleted: , allTimeTracked: [], estimatedCompletionTime: , actualCompletionTime: , project: [area: [sub-area: [sub-sub-area]]]}
+// taskItem = {taskName: , taskID: , currentCompletedTime: , dayStarted: , dayCompleted: , allTimeTracked: [], estimatedCompletionTime: , actualCompletionTime: , project: [area: [sub-area: [sub-sub-area]]]}
 
 //========== DISPLAY TIME ELAPSED ==========\\
 // Convert to hours mins:secs
@@ -82,7 +82,7 @@ const timerReset = function() {
   timerOn = false;
   timerBtn.textContent = 'Start';
   timerBtn.className = '';
-  timerBtn.classList.add('btn-off-state');
+  // timerBtn.classList.add('btn-off-state');
   totalTime = 0;
   displayTime(totalTime);
 };
@@ -126,13 +126,6 @@ const addTask = function() {
 };
 
 //========== LOGIC ==========\\
-// Start/Pause the timer
-timerBtn.addEventListener('click', () => {
-  !timerOn ? timerActive() : timerPaused();
-});
-
-// Reset the timer
-resetBtn.addEventListener('click', timerReset);
 
 // Add a new task
 addTaskBtn.addEventListener('click', () => {
