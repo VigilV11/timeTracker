@@ -1,0 +1,23 @@
+{
+  "name": "timetracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "dev": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VigilV11/timeTracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VigilV11/timeTracker/issues"
+  },
+  "homepage": "https://github.com/VigilV11/timeTracker#readme",
+  "devDependencies": {
+    "parcel": "^1.12.4"
+  }
+}

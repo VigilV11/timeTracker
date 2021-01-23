@@ -82,3 +82,7 @@ taskListDiv.addEventListener('click', function(e) {
     timerOn = true;
   }
 });
+
+////////
+// For Parcel hot loading
+module.hot && module.hot.accept();
