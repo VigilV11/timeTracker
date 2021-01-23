@@ -1,3 +1,8 @@
+// For Polyfilling
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+////
+
 import * as Timer from './timer.js';
 
 const timerBtn = document.querySelector('#timer-btn');
