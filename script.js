@@ -26,18 +26,18 @@ const addTask = function() {
   taskList.push({ taskName: taskInput.value, taskId: taskId });
   const html = `
     <div class="task-item">
-    <span>${taskInput.value.padEnd(30)}</span>  &nbsp;&nbsp;&nbsp;&nbsp;
-    <span id="time-display" class="timer-${taskId}">00m 00s</span>
+    <span class="task-name">${taskInput.value}</span>  &nbsp;&nbsp;
+    <span id="time-display" class="timer-${taskId}">00m 00s</span> &nbsp;&nbsp;&nbsp;&nbsp;
     
 
 
-    <i class="fas fa-play-circle" data-task-id=${taskId}></i> &nbsp;
+    <i class="fas fa-play-circle" data-task-id=${taskId}></i> &nbsp;&nbsp;
 
     
     
     
-    <i class="fas fa-sync-alt"></i> &nbsp;
-    <i class="fas fa-trash"></i> &nbsp;
+    <i class="fas fa-sync-alt"></i> &nbsp;&nbsp;
+    <i class="fas fa-trash"></i> &nbsp;&nbsp;
     <i class="fas fa-check-circle"></i> &nbsp;&nbsp;
 
     <br />
