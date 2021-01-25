@@ -14,16 +14,22 @@ const taskListDiv = document.querySelector('#task-list-div');
 
 let timerOn = false; // Is timer ON (true) or OFF (false)?
 
-const taskList = [];
-let taskId = 0; // a number to indentify individual items
+let taskList = [];
+if (localStorage.taskList) {
+  taskList = JSON.parse(localStorage.getItem('taskList'));
+}
+// TODO: Render tasks on page from taskList
 
-// taskItem = {taskName: , taskID: , currentCompletedTime: , dayStarted: , dayCompleted: , allTimeTracked: [], estimatedCompletionTime: , actualCompletionTime: , project: [area: [sub-area: [sub-sub-area]]]}
+let taskId = -1; // a number to indentify individual items; so that the first task will be 0 after taskId++
+
+let currentTask;
+
+// taskItem = {taskName: , taskID: , totalTime: , dayStarted: , dayCompleted: , allTimeTracked: [], estimatedCompletionTime: , actualCompletionTime: , project: [area: [sub-area: [sub-sub-area]]]}
 
 //========== ADD TASK ==========\\
 const addTask = function() {
-  // console.log(taskInput.value);
   taskId++;
-  taskList.push({ taskName: taskInput.value, taskId: taskId });
+  taskList.push({ taskName: taskInput.value, taskId: taskId, totalTime: 0 });
   const html = `
     <div class="task-item">
     <span class="task-name">${taskInput.value}</span>  &nbsp;&nbsp;
@@ -31,14 +37,14 @@ const addTask = function() {
     
 
 
-    <i class="fas fa-play-circle" data-task-id=${taskId}></i> &nbsp;&nbsp;
+    <i class="taskBtn timerBtn fas fa-play-circle" data-task-id=${taskId}></i> &nbsp;&nbsp;
 
     
     
     
-    <i class="fas fa-sync-alt"></i> &nbsp;&nbsp;
-    <i class="fas fa-trash"></i> &nbsp;&nbsp;
-    <i class="fas fa-check-circle"></i> &nbsp;&nbsp;
+    <i class="taskBtn fas fa-sync-alt"></i> &nbsp;&nbsp;
+    <i class="taskBtn fas fa-trash"></i> &nbsp;&nbsp;
+    <i class="taskBtn fas fa-check-circle"></i> &nbsp;&nbsp;
 
     <br />
     <br />
@@ -72,20 +78,30 @@ addTaskBtn.addEventListener('click', () => {
 
 // Adding event delegation to handle buttons related to individual tasks
 taskListDiv.addEventListener('click', function(e) {
-  if (!e.target.classList.contains('fas')) return;
+  if (!e.target.classList.contains('taskBtn')) return; // It it is not a button return immediately
 
-  // console.log(e.target.dataset.taskId);
-  // document.querySelector(`.timer-${e.target.dataset.taskId}`).textContent = '';
+  if (e.target.classList.contains('timerBtn')) {
+    //If it is timer start/pause button
 
-  // For now this works only for a single task.
+    const taskId = e.target.dataset.taskId;
 
-  if (timerOn) {
-    Timer.timerPaused(e);
-    timerOn = false;
-  } else {
-    Timer.timerActive(e);
-    timerOn = true;
+    if (timerOn) {
+      if (taskId === currentTask) {
+        Timer.timerPaused(e, taskList[taskId]);
+        timerOn = false;
+      }
+    } else {
+      Timer.timerActive(e, taskList[taskId]);
+      timerOn = true;
+      currentTask = taskId;
+    }
   }
+});
+
+window.addEventListener('beforeunload', e => {
+  e.preventDefault();
+  // e.returnValue = '';
+  localStorage.setItem('taskList', JSON.stringify(taskList));
 });
 
 ////////

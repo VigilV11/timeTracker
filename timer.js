@@ -33,9 +33,11 @@ const displayTime = function(timeElapsed, e) {
 };
 
 //========== TIMER IS ACTIVE ==========\\
-const timerActive = function(e) {
+const timerActive = function(e, currentTask) {
   e.target.classList.remove('fa-play-circle');
   e.target.classList.add('fa-pause');
+
+  const totalTime = currentTask.totalTime;
 
   timerStartTime = Date.now(); // current timestamp
 
@@ -49,8 +51,8 @@ const timerActive = function(e) {
 };
 
 //========== TIMER IS PAUSED ==========\\
-const timerPaused = function(e) {
-  totalTime += Date.now() - timerStartTime;
+const timerPaused = function(e, currentTask) {
+  currentTask.totalTime = currentTask.totalTime + Date.now() - timerStartTime;
 
   e.target.classList.remove('fa-pause');
   e.target.classList.add('fa-play-circle');
