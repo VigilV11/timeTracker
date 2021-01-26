@@ -1,6 +1,6 @@
 // For Polyfilling
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+import './node_modules/core-js/stable';
+import './node_modules/regenerator-runtime/runtime';
 ////
 
 import * as Timer from './timer.js';
@@ -15,9 +15,7 @@ const taskListDiv = document.querySelector('#task-list-div');
 let timerOn = false; // Is timer ON (true) or OFF (false)?
 
 let taskList = [];
-if (localStorage.taskList) {
-  taskList = JSON.parse(localStorage.getItem('taskList'));
-}
+
 // TODO: Render tasks on page from taskList
 
 let taskId = -1; // a number to indentify individual items; so that the first task will be 0 after taskId++
@@ -29,15 +27,22 @@ let currentTask;
 //========== ADD TASK ==========\\
 const addTask = function() {
   taskId++;
-  taskList.push({ taskName: taskInput.value, taskId: taskId, totalTime: 0 });
-  const html = `
+  const task = { taskName: taskInput.value, taskId: taskId, totalTime: 0 };
+  taskList.push(task);
+  const html = generateTaskHTML(task);
+  taskListDiv.insertAdjacentHTML('beforeend', html);
+};
+
+//========== GENERATE TASK ITEM HTML ==========\\
+const generateTaskHTML = function(task) {
+  return `
     <div class="task-item">
-    <span class="task-name">${taskInput.value}</span>  &nbsp;&nbsp;
-    <span id="time-display" class="timer-${taskId}">00m 00s</span> &nbsp;&nbsp;&nbsp;&nbsp;
+    <span class="task-name">${task.taskName}</span>  &nbsp;&nbsp;
+    <span id="time-display" class="timer-${task.taskId}">00m 00s</span> &nbsp;&nbsp;&nbsp;&nbsp;
     
 
 
-    <i class="taskBtn timerBtn fas fa-play-circle" data-task-id=${taskId}></i> &nbsp;&nbsp;
+    <i class="taskBtn timerBtn fas fa-play-circle" data-task-id=${task.taskId}></i> &nbsp;&nbsp;
 
     
     
@@ -60,8 +65,17 @@ const addTask = function() {
     <button id="reset-btn" class="btn-off-state">Reset</button>
     -->
     `;
-  taskListDiv.insertAdjacentHTML('beforeend', html);
 };
+
+//========== RENDER TASKS TO WEBPAGE FROM LOCALSTORAGE ==========\\
+if (localStorage.taskList) {
+  taskList = JSON.parse(localStorage.getItem('taskList'));
+
+  taskList.forEach(task => {
+    const html = generateTaskHTML(task);
+    taskListDiv.insertAdjacentHTML('beforeend', html);
+  });
+}
 
 //========== LOGIC ==========\\
 
@@ -106,4 +120,4 @@ window.addEventListener('beforeunload', e => {
 
 ////////
 // For Parcel hot loading
-module.hot && module.hot.accept();
+// module.hot && module.hot.accept();
